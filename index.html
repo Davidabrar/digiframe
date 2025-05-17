@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digiframe.id</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+    }
+
+    form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          /* border: 1px solid #00fffb;  Hapus border default form */
+          padding: 20px;
+          border-radius: 10px;
+          width: 90%;
+          max-width: 400px;
+          background-color: #000;
+          box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+        .form-animated-border {
+          position: relative;
+          z-index: 1;
+          overflow: hidden;
+          border-radius: 10px;
+          padding: 20px 16px;
+          border: 4px solid transparent; /* Pertebal border */
+        }
+        .form-animated-border {
+          position: relative;
+          z-index: 1;
+          overflow: hidden;
+          border-radius: 10px;
+          padding: 20px 16px;
+          border: 4px solid transparent; /* Border lebih tebal */
+        }
+
+        .form-animated-border::before {
+          content: "";
+          position: absolute;
+          z-index: 2;
+          top: 0; left: 0; right: 0; bottom: 0;
+          border-radius: 10px;
+          padding: 0;
+          background: linear-gradient(270deg, #00fffb, #3001ff, #43cea2, #00fffb);
+          background-size: 400% 400%;
+          animation: animatedGradient 4s linear infinite;
+          pointer-events: none;
+          /* Hanya tampilkan border dengan masking */
+          mask:
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+          -webkit-mask:
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          border: 4px solid transparent; /* Border lebih tebal */
+        }
+
+        @keyframes animatedGradient {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
+    form label{
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      width: 100%;
+      }
+
+      .form-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+   margin-top: 10px;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+     width: 100%;
+    box-sizing: border-box;
+     margin-bottom: 15px;
+     }      
+
+    #backButton {
+  position: absolute; /* Atur posisi absolut */
+  top: 20px; /* Jarak dari atas */
+  left: 20px; /* Jarak dari kiri */
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #00fffb;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-button:active {
+    transform: scale(0.9); /* Mengecilkan tombol sedikit */
+    background-color: #00d5ff; /* Ubah warna tombol */
+    transition: transform 0.1s ease, background-color 0.1s ease;
+  }
+
+#backButton:hover {
+  background-color: #00d5ff;
+}
+
+    form input {
+      padding: 8px;
+      border: 3px solid #3001ff;
+      border-radius: 5px;
+    }
+
+    form button {
+      padding: 10px;
+      background-color: #fff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #f1f1f1;
+    }
+
+    #mainContent {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #mediaContent {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .photo-container {
+      position: relative;
+      margin: 10px;
+      width: 150px;
+      height: 180px;
+      background-color: #222;
+      border: 1px solid #444;
+      border-radius: 10px;
+      overflow: hidden;
+      padding-top: 10px;
+    }
+
+    .photo-container img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.5);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .price {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #00fffb;
+    }
+
+    .cart-button {
+      margin-top: 5px;
+      background-color: #00fffb;
+      color: #000;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #cartIcon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    #cartPanel {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background: #000000;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #00aeff;
+      max-width: 250px;
+       max-height: 300px; 
+        overflow-y: auto; /* Tambahkan scrolling jika konten melebihi tinggi */
+       z-index: 1000; /* Pastikan berada di atas elemen lain */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.21); /* Tambahkan bayangan untuk visibilitas */
+    }
+
+    #cartPanel ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 10px;
+    }
+
+    #imageModal img#modalImg {
+      max-width: 90%;
+      max-height: 90%;
+      border: 3px solid #00ddff;
+      border-radius: 5px;
+    .fade-in-out {
+  animation: fadeOut 1s ease-in-out;}
+}
+  </style>
+</head>
+<body>
+
+<h1>WELCOME TO DIGIFRAME.ID </h1>
+
+<!-- Tambahkan logo di sini -->
+<img src='gambar-digiframe/logo-3.jpg' alt="Digiframe logo featuring stylized text Digiframe ID in a modern font with a bright and welcoming color palette, set against a clean background, conveying a professional and friendly digital photo frame service" style="width:100px; margin-bottom:15px; display:block;">
+
+<!-- Ikon keranjang -->
+<div id="cartIcon" onclick="toggleCartPanel()">🛒 <span id="cartCount">0</span></div>
+
+<!-- Panel keranjang -->
+<div id="cartPanel">
+  <h3>Keranjang</h3>
+  <ul id="cartList"></ul>
+  <p id="totalPrice">Total: Rp 0</p> <!-- Elemen untuk total harga -->
+  <button onclick="toggleCartPanel()">Kembali</button> <!-- Tombol Kembali -->
+  <button onclick="checkout()">Checkout</button>
+</div>
+
+<!-- Form Login -->
+<form id="loginForm"class= "form-animated-border">
+  <label for="username">👤 Username:</label>
+  <input type="text" id="username" required>
+  <label for="password">🔒 Password:</label>
+  <input type="password" id="password" required>
+  <label style="align-self: flex-start; margin-top: -10px; margin-bottom: 10px;">
+  <input type="checkbox" id="showPassword" style="margin-right:5px;">
+  Lihat Password
+</label>
+  <div class="form-actions">
+  <button type="submit">LOGIN</button>
+  </div>
+</form>
+
+<!-- Konten utama -->
+<div id="mainContent" style="display:none;">
+  <h2>SELAMAT DATANG DI HALAMAN UTAMA</h2>
+  <h3>PILIHLAH FOTO SESUAI KATEGORI </h3>
+  </select>
+  <select id="category" onchange="showImages()">
+  <option value="all">Semua</option>
+  <option value="sunset">Sunset</option>
+  <option value="makanan">Makanan</option>
+  <option value="pemandangan">Pemandangan</option>
+</select>
+  <div id="mediaContent"></div>
+  <button id="backButton" onclick="goBack()">Kembali</button> <!-- Tombol Kembali -->
+</div>
+
+<!-- Modal Preview Foto -->
+<div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000;">
+  <span onclick="closeModal()" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
+  <img id="modalImg" src="" alt="Preview Foto" />
+  <div id="modalWatermark" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:rgba(255,255,255,0.5); font-size:24px; pointer-events:none;">Digiframe</div>
+</div>
+</div>
+
+<script>
+// Tidak ada pendaftaran, hanya login admin
+const cart = [];
+function showImages() {
+
+  const category = document.getElementById('category').value;
+  const mediaContent = document.getElementById('mediaContent');
+  mediaContent.innerHTML = '';
+  
+   // Pilih gambar berdasarkan kategori
+  const images = {
+    sunset: [
+      'gambar-digiframe/sunset-1.jpeg',
+      'gambar-digiframe/sunset-2.jpeg',
+      'gambar-digiframe/sunset-3.jpeg',
+      'gambar-digiframe/sunset-4.jpeg',
+      'gambar-digiframe/sunset-5.jpg',
+      'gambar-digiframe/sunset-5.jpg',
+      'gambar-digiframe/sunset-6.jpg',
+      'gambar-digiframe/sunset-7.jpg',
+      'gambar-digiframe/sunset-8.jpg',
+      'gambar-digiframe/sunset-9.jpg'
+    ],
+    makanan: [
+      'gambar-digiframe/makanan-1.jpeg',
+      'gambar-digiframe/makanan-2.jpeg',
+      'gambar-digiframe/makanan-3.jpeg',
+      'gambar-digiframe/makanan-4.jpeg',
+      'gambar-digiframe/makanan-5.jpg',
+      'gambar-digiframe/makanan-6.jpg',
+      'gambar-digiframe/makanan-7.jpg'
+    ],
+    pemandangan: [
+     'gambar-digiframe/pemandangan-1.jpeg',
+      'gambar-digiframe/pemandangan-2.jpeg',
+      'gambar-digiframe/pemandangan-3.jpeg',
+      'gambar-digiframe/pemandangan-4.jpeg',
+      'gambar-digiframe/pemandangan-5.jpeg',
+      'gambar-digiframe/pemandangan-6.jpeg',
+      'gambar-digiframe/pemandangan-7.jpeg',
+      'gambar-digiframe/pemandangan-8.jpeg',
+      'gambar-digiframe/pemandangan-9.jpeg',
+      'gambar-digiframe/pemandangan-10.jpeg',
+      'gambar-digiframe/pemandangan-11.jpeg',
+      'gambar-digiframe/pemandangan-12.jpg',
+      'gambar-digiframe/pemandangan-13.jpg'
+    ],
+  };
+  const selectedImages = category === 'all' ? Object.values(images).flat() : (images[category] || []);
+    const container = document.createElement('div');
+    container.className = 'photo-container';
+
+    // Tampilkan gambar
+  selectedImages.forEach(src => {
+    const container = document.createElement('div');
+    container.className = 'photo-container';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Foto';
+    img.onclick = () => openModal(src);
+
+    const watermark = document.createElement('div');
+    watermark.className = 'watermark';
+    watermark.innerText = 'Digiframe';
+
+    const price = document.createElement('div');
+    price.className = 'price';
+    price.innerText = 'Rp 10.000';
+
+    const cartButton = document.createElement('button');
+    cartButton.className = 'cart-button';
+    cartButton.innerText = '🛒 Tambahkan';
+    cartButton.onclick = () =>{
+     addToCart(src);
+
+  // Tambahkan animasi teks sementara
+  const tempText = document.createElement('span');
+  tempText.innerText = '✔ Ditambahkan!';
+  tempText.style.position = 'absolute';
+  tempText.style.color = '#00ff00';
+  tempText.style.fontSize = '12px';
+  tempText.style.top = '50%';
+  tempText.style.left = '50%';
+  tempText.style.transform = 'translate(-50%, -50%)';
+  tempText.style.zIndex = '1000';
+
+  cartButton.appendChild(tempText);
+
+  // Hapus teks setelah 1 detik
+  setTimeout(() => {
+    cartButton.removeChild(tempText);
+  }, 1000);
+  }
+    container.appendChild(img);
+    container.appendChild(watermark);
+    container.appendChild(price);
+    container.appendChild(cartButton);
+
+    mediaContent.appendChild(container);
+  });
+}
+function addToCart(src) {
+  if (cart.includes(src)) {
+    alert('Foto ini Sudah Ada Dalam Keranjang!');
+    return; // Jangan tambahkan foto ke keranjang
+  }
+  cart.push(src);
+  updateCartDisplay();
+}
+
+function updateCartDisplay() {
+  document.getElementById('cartCount').innerText = cart.length;
+  const cartList = document.getElementById('cartList');
+  cartList.innerHTML = ''; // Kosongkan daftar keranjang sebelumnya
+
+   let totalHarga = 0; // Variabel untuk menghitung total harga
+
+  cart.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.style.display = 'flex';
+    li.style.alignItems = 'center';
+    li.style.marginBottom = '10px';
+
+    // Tambahkan gambar kecil ke daftar keranjang
+    const img = document.createElement('img');
+    img.src = item;
+    img.alt = 'Foto';
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.objectFit = 'cover';
+    img.style.marginRight = '10px';
+    img.style.borderRadius = '5px';
+
+    // Tambahkan nama file gambar
+    const text = document.createElement('span');
+    text.textContent = ` ${item}`;
+
+     // Tambahkan tombol X untuk menghapus
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'X';
+    removeButton.style.background = 'red';
+    removeButton.style.color = 'white';
+    removeButton.style.border = 'none';
+    removeButton.style.borderRadius = '5px';
+    removeButton.style.cursor = 'pointer';
+    removeButton.style.marginLeft = '10px';
+    removeButton.onclick = () => {
+      cart.splice(index, 1); // Hapus item dari array cart
+      updateCartDisplay(); // Perbarui tampilan keranjang
+    };
+
+    li.appendChild(img); // Tambahkan gambar ke elemen <li>
+    li.appendChild(text); // Tambahkan teks ke elemen <li>
+    li.appendChild(removeButton); // Tambahkan tombol X ke elemen <li>
+    cartList.appendChild(li); // Tambahkan elemen <li> ke daftar keranjang
+
+   // Tambahkan harga item ke total harga
+   totalHarga += 10000; // Contoh harga per item Rp 10.000  
+  });
+
+   // Perbarui elemen total harga
+  document.getElementById('totalPrice').innerText = `Total: Rp ${totalHarga.toLocaleString()}`;
+}
+
+function toggleCartPanel() {
+  const panel = document.getElementById('cartPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function openModal(src) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalWatermark = document.getElementById('modalWatermark');
+  modal.style.display = 'flex';
+  modalImg.src = src;
+  modalWatermark.innerText = 'Digiframe'; // Tambahkan teks watermark
+}
+
+function closeModal() {
+  document.getElementById('imageModal').style.display = 'none';
+}
+
+function goBack() {
+    document.getElementById('mainContent').style.display = 'none'; // Sembunyikan tampilan utama
+    document.getElementById('loginForm').style.display = 'block'; // Tampilkan form login
+  }
+
+function checkout() {
+  if (cart.length === 0) {
+    alert('Keranjang kosong!');
+  } else {
+    // Buat pesan otomatis untuk WhatsApp
+    const items = cart.map((item, index) => `${index + 1}. ${item}`).join('%0A'); // Format daftar item
+    const totalHarga = cart.length * 10000; // Contoh harga per item Rp 10.000
+    const pesan = `Halo, saya ingin melakukan pembayaran untuk pesanan berikut:%0A%0A${items}%0A%0ATotal: Rp ${totalHarga.toLocaleString()}%0A%0ANama: [Isi Nama Anda]%0AAlamat: [Isi Alamat Anda]%0A`;
+
+    // Buat URL WhatsApp
+    const nomorWhatsApp = '6282383986323'; // Ganti dengan nomor WhatsApp Anda
+    const url = `https://wa.me/${nomorWhatsApp}?text=${pesan}`;
+
+    // Tampilkan konfirmasi dan arahkan ke WhatsApp
+    if (confirm('Anda akan diarahkan ke WhatsApp untuk menyelesaikan pembayaran. Lanjutkan?')) {
+      window.open(url, '_blank'); // Buka WhatsApp di tab baru
+    }
+
+    // Kosongkan keranjang setelah checkout
+    const mediaContent = document.getElementById('mediaContent');
+    cart.forEach((src) => {
+      const imgElements = mediaContent.querySelectorAll(`img[src="${src}"]`);
+      imgElements.forEach((img) => {
+        const container = img.closest('.photo-container');
+        if (container) {
+          container.remove();
+        }
+      });
+    });
+
+    cart.length = 0; // Kosongkan keranjang
+    updateCartDisplay(); // Perbarui tampilan keranjang
+    toggleCartPanel(); // Tutup panel keranjang
+  }
+  ;
+  
+    // Hapus elemen gambar yang di-checkout dari tampilan utama
+  const mediaContent = document.getElementById('mediaContent');
+  cart.forEach((src) => {
+    const imgElements = mediaContent.querySelectorAll(`img[src="${src}"]`);
+    imgElements.forEach((img) => {
+      const container = img.closest('.photo-container');
+      if (container) {
+        container.remove();
+      }
+    });
+  });
+
+  // Kosongkan keranjang
+  cart.length = 0;
+
+  // Perbarui tampilan keranjang
+  updateCartDisplay();
+
+  // Tutup panel keranjang
+  toggleCartPanel();
+}
+
+// Daftar user dan password langsung di script
+const users = [
+  { username: 'user1', password: '000000' },
+  { username: 'user2', password: '222222' },
+  { username: 'user3', password: '333333' },
+  { username: 'user4', password: '444444' },
+  { username: 'user5', password: '555555' },
+  { username: 'user6', password: '666666' },
+  { username: 'user7', password: '777777' },
+  { username: 'user8', password: '888888' },
+  { username: 'user9', password: '999999' },
+  { username: 'user10', password: '101010' },
+  { username: 'user11', password: '111111' },
+  { username: 'user12', password: '121212' },
+  { username: 'user13', password: '131313' },
+  { username: 'user14', password: '141414' },
+  { username: 'user15', password: '151515' },
+  { username: 'user16', password: '161616' },
+  { username: 'user17', password: '171717' },
+  { username: 'user18', password: '181818' },
+  { username: 'user19', password: '191919' },
+  { username: 'user20', password: '202020' }
+];
+// Fungsi untuk menampilkan password
+document.getElementById('showPassword').addEventListener('change', function() {
+  const pwd = document.getElementById('password');
+  pwd.type = this.checked ? 'text' : 'password';
+});
+
+// Handler login
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+  event.preventDefault();  
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+
+  // Cek admin atau user dari array
+  const user = users.find(u => u.username === username && u.password === password);
+  if ((username === 'admin' && password === '12345') || user) {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  } else {
+    alert('Username atau password salah!');
+  }
+});
+</script>
+<footer style="text-align:center; color:#888; font-size:12px; margin-top:40px;">
+  &copy; 2024 Digiframe.id
+</footer>
+</body>
+</html>
